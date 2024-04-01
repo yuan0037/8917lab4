@@ -1,9 +1,14 @@
 import asyncio
 from azure.servicebus.aio import ServiceBusClient
 from azure.servicebus import ServiceBusMessage
+from dotenv import load_dotenv
+import os
 
-NAMESPACE_CONNECTION_STR = "Endpoint=sb://yuan0037lab4.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=YcmaSkkv+CNc0EK2v5x+H4igE5bWIy/HY+ASbP8WkMc="
-QUEUE_NAME = "booking-status"
+load_dotenv()
+
+# Access environment variables
+NAMESPACE_CONNECTION_STR = os.getenv("NAMESPACE_CONNECTION_STR")
+QUEUE_NAME = os.getenv("QUEUE_NAME")
 
 async def send_single_message(sender):
     # Create a Service Bus message and send it to the queue

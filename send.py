@@ -10,11 +10,18 @@ load_dotenv()
 NAMESPACE_CONNECTION_STR = os.getenv("NAMESPACE_CONNECTION_STR")
 QUEUE_NAME = os.getenv("QUEUE_NAME")
 
-async def send_single_message(sender):
+async def send_single_message(sender, confirmed=True):
     # Create a Service Bus message and send it to the queue
-    message = ServiceBusMessage("Single Message")
+    message = ServiceBusMessage("New Single Message")
+    if confirmed: 
+        message.application_properties = {
+        "availability": True,
+        "user_verification": True,
+        }
+        
     await sender.send_messages(message)
-    print("Sent a single message")
+    status = "confirmed" if confirmed else "declined"
+    print("Sent a single message with the status of ", status)
     
 async def send_a_list_of_messages(sender):
     # Create a list of messages and send it to the queue
@@ -48,10 +55,11 @@ async def run():
         async with sender:
             # Send one message
             await send_single_message(sender)
+            await send_single_message(sender, False)
             # Send a list of messages
-            await send_a_list_of_messages(sender)
-            # Send a batch of messages
-            await send_batch_message(sender)
+            # await send_a_list_of_messages(sender)
+            # # Send a batch of messages
+            # await send_batch_message(sender)
             
 
 
